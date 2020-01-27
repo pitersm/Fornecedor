@@ -18,9 +18,9 @@ namespace Fornecedor.DAL.Repository
             entities = context.Set<TEntity>();
         }
 
-        public Task<TEntity> Get(string id)
+        public Task<TEntity> Get(Guid id)
         {
-            return entities.Where(a => a.Id.ToString() == id).FirstOrDefaultAsync();
+            return entities.Where(a => a.Id == id).FirstOrDefaultAsync();
         }
 
         public IQueryable<TEntity> List()
@@ -30,6 +30,7 @@ namespace Fornecedor.DAL.Repository
 
         public async Task<TEntity> Save(TEntity entity)
         {
+            entity.Id = Guid.NewGuid();
             await entities.AddAsync(entity);
             await _context.SaveChangesAsync();
 
@@ -46,7 +47,7 @@ namespace Fornecedor.DAL.Repository
             await _context.SaveChangesAsync();
         }
 
-        public async Task Delete(string id)
+        public async Task Delete(Guid id)
         {
             TEntity entity = await Get(id);
             entities.Remove(entity);

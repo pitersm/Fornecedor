@@ -9,8 +9,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Fornecedor.DAL.Migrations
 {
     [DbContext(typeof(DataContext))]
-    [Migration("20200126013734_EntityCreation")]
-    partial class EntityCreation
+    [Migration("20200127020627_missingType")]
+    partial class missingType
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -44,19 +44,31 @@ namespace Fornecedor.DAL.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("TEXT");
 
-                    b.Property<Guid?>("CompanyId")
+                    b.Property<DateTime?>("BirthDate")
+                        .HasColumnType("TEXT");
+
+                    b.Property<Guid>("CompanyId")
                         .HasColumnType("TEXT");
 
                     b.Property<string>("CpfCnpj")
+                        .IsRequired()
                         .HasColumnType("TEXT");
 
                     b.Property<DateTime>("CreationTime")
                         .HasColumnType("TEXT");
 
                     b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Rg")
                         .HasColumnType("TEXT");
 
                     b.Property<string>("Telephones")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Type")
+                        .IsRequired()
                         .HasColumnType("TEXT");
 
                     b.HasKey("Id");
@@ -70,7 +82,9 @@ namespace Fornecedor.DAL.Migrations
                 {
                     b.HasOne("Fornecedor.DAL.Models.Company", "Company")
                         .WithMany()
-                        .HasForeignKey("CompanyId");
+                        .HasForeignKey("CompanyId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 #pragma warning restore 612, 618
         }

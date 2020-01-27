@@ -1,17 +1,19 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+using AutoMapper;
 using Fornecedor.DAL.Data;
+using Fornecedor.DAL.Models;
+using Fornecedor.DAL.Repository;
+using Fornecedor.Service;
+using Fornecedor.Service.DTO;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.HttpsPolicy;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.PlatformAbstractions;
+using Microsoft.OpenApi.Models;
+using System;
+using System.IO;
 
 namespace Fornecedor
 {
@@ -27,9 +29,45 @@ namespace Fornecedor
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddSwaggerGen(c =>
+            {
+                c.SwaggerDoc("v1",
+                    new OpenApiInfo
+                    {
+                        Title = "Fornecedor API",
+                        Version = "v1",
+                    });
+
+                string caminhoAplicacao =
+                    PlatformServices.Default.Application.ApplicationBasePath;
+                string nomeAplicacao =
+                    PlatformServices.Default.Application.ApplicationName;
+                string caminhoXmlDoc =
+                    Path.Combine(caminhoAplicacao, $"{nomeAplicacao}.xml");
+
+                c.IncludeXmlComments(caminhoXmlDoc);
+            });
+
+            services.AddMvc();
             services.AddDbContext<DataContext>(x => x.UseSqlite(Configuration.GetConnectionString("DefaultConnection")));
             services.AddControllers();
+            services.AddScoped<ICompanyService, CompanyService>();
+            services.AddScoped<ISupplierService, SupplierService>();
+            services.AddScoped(typeof(IRepository<>), typeof(BaseRepository<>));
+            services.AddScoped(typeof(ISupplierRepository), typeof(SupplierRepository));
+            services.AddScoped(typeof(ICompanyRepository), typeof(CompanyRepository));
+
             services.AddCors();
+
+            var config = new MapperConfiguration(cfg =>
+            {
+                cfg.CreateMap<SupplierDTO, Supplier>()
+                    .ForMember(dest => dest.Company, m => m.MapFrom(a => new Company() { Id = (Guid) a.Company.Id }));
+                cfg.CreateMap<CompanyDTO, Company>();
+                cfg.CreateMap<Company, CompanyDTO>();
+            });
+            IMapper mapper = config.CreateMapper();
+            services.AddSingleton(mapper);
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -43,6 +81,13 @@ namespace Fornecedor
             app.UseHttpsRedirection();
 
             app.UseRouting();
+
+            app.UseSwagger();
+            app.UseSwaggerUI(c =>
+            {
+                c.SwaggerEndpoint("/swagger/v1/swagger.json",
+                    "Fornecedor API");
+            });
 
             app.UseAuthorization();
 

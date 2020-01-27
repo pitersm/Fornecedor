@@ -10,9 +10,9 @@ namespace Fornecedor.DAL.Repository
     public interface IRepository<TEntity> where TEntity : class, BaseModel
     {
         IQueryable<TEntity> List();
-        Task<TEntity> Get(string id);
+        Task<TEntity> Get(Guid id);
         Task<TEntity> Save(TEntity entity);
         Task Update(TEntity entity);
-        Task Delete(string id);
+        Task Delete(Guid id);
     }
 }

@@ -4,7 +4,6 @@ using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
-using System.Text;
 
 namespace Fornecedor.DAL.Models
 {
@@ -13,21 +12,24 @@ namespace Fornecedor.DAL.Models
         [Required]
         public Guid Id { get; set; }
         [Required]
+        public string Type { get; set; }
+        [Required]
         public string Name { get; set; }
         [Required]
         public string CpfCnpj { get; set; }
         [Required]
         public DateTime CreationTime { get; set; }
         [Required]
+        [NotMapped]
         public List<string> TelephoneList
         {
             get
             {
-                return this.Telephones.Split(',').ToList();
+                return Telephones.Split(',').ToList();
             }
             set
             {
-                this.Telephones = String.Join(",", value);
+                Telephones = String.Join(",", value);
             }
         }
         [EditorBrowsable(EditorBrowsableState.Never)]

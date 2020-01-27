@@ -1,6 +1,7 @@
 ﻿using Fornecedor.DAL.Data;
 using Fornecedor.DAL.Models;
 using Microsoft.EntityFrameworkCore;
+using System;
 using System.Threading.Tasks;
 
 namespace Fornecedor.DAL.Repository
@@ -18,6 +19,12 @@ namespace Fornecedor.DAL.Repository
         {
             var obj = await List().FirstOrDefaultAsync(a => a.Cnpj == cnpj);
             return obj != null;
+        }
+
+        public async Task<string> GetCnpj(Guid id)
+        {
+            var obj = await Get(id);
+            return obj.Cnpj;
         }
     }
 }

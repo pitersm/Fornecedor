@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace Fornecedor.DAL.Migrations
 {
-    public partial class EntityCreation : Migration
+    public partial class initial : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -26,11 +26,14 @@ namespace Fornecedor.DAL.Migrations
                 columns: table => new
                 {
                     Id = table.Column<Guid>(nullable: false),
-                    Name = table.Column<string>(nullable: true),
-                    CpfCnpj = table.Column<string>(nullable: true),
+                    Type = table.Column<string>(nullable: false),
+                    Name = table.Column<string>(nullable: false),
+                    CpfCnpj = table.Column<string>(nullable: false),
                     CreationTime = table.Column<DateTime>(nullable: false),
                     Telephones = table.Column<string>(nullable: true),
-                    CompanyId = table.Column<Guid>(nullable: true)
+                    Rg = table.Column<string>(nullable: true),
+                    BirthDate = table.Column<DateTime>(nullable: true),
+                    CompanyId = table.Column<Guid>(nullable: false)
                 },
                 constraints: table =>
                 {
@@ -40,7 +43,7 @@ namespace Fornecedor.DAL.Migrations
                         column: x => x.CompanyId,
                         principalTable: "Companies",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateIndex(
