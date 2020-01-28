@@ -44,14 +44,14 @@ namespace Fornecedor.Service
 
         public async Task<SupplierDTO> Get(Guid id)
         {
-            return _mapper.Map<SupplierDTO>(await _repository.Get(id));
+            return _mapper.Map<SupplierDTO>(await _repository.Get(id, "Company"));
         }
 
         public Task<List<SupplierDTO>> List()
         {
-            return _repository.List()
-                              .Select(a => _mapper.Map<SupplierDTO>(a))
+            return _repository.List("Company")
                               .OrderBy(a => a.Name)
+                              .Select(a => _mapper.Map<SupplierDTO>(a))
                               .ToListAsync();
         }
 
@@ -109,7 +109,13 @@ namespace Fornecedor.Service
                     throw new Exception("Rg and Birth Date are Mandatory for PF Suppliers");
                 }
 
-                var company = await _companyService.Get((Guid)dto.Company.Id);
+                var company = await _companyService.Get(dto.CompanyId);
+
+                if (company == null)
+                {
+                    throw new Exception("Invalid company for supplier.");
+                }
+
                 if (company.Uf == "PR" && ValidationService.CalculateAge(dto.BirthDate) < 18)
                 {
                     throw new Exception("Supplier must be of age.");

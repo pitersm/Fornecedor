@@ -28,7 +28,7 @@ namespace Fornecedor.API.Controllers
             return Ok(values);
         }
 
-        [HttpGet("cnpj/{cnpj}")]
+        [HttpGet("cnpj/{cpfCnpj}")]
         public async Task<IActionResult> CpfCnpjExists(string cpfCnpj)
         {
             bool exists = await _supplierService.CpfCnpjExists(cpfCnpj);

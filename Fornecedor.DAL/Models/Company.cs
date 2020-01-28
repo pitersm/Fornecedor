@@ -10,5 +10,6 @@ namespace Fornecedor.DAL.Models
         public string Uf { get; set; }
         public string TradeName { get; set; }
         public string Cnpj { get; set; }
+        public ICollection<Supplier> suppliers{ get; set; }
     }
 }

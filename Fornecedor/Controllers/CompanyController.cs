@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Http;
+using System.Text.Json;
 using System.Threading.Tasks;
 using Fornecedor.Service;
 using Fornecedor.Service.DTO;
@@ -14,9 +16,12 @@ namespace Fornecedor.API.Controllers
     public class CompanyController : ControllerBase
     {
         private readonly ICompanyService _CompanyService;
-        public CompanyController(ICompanyService CompanyService)
+        private readonly IHttpClientFactory _clientFactory;
+
+        public CompanyController(ICompanyService CompanyService, IHttpClientFactory clientFactory)
         {
             _CompanyService = CompanyService;
+            _clientFactory = clientFactory;
         }
 
         // GET: api/Book
@@ -43,6 +48,24 @@ namespace Fornecedor.API.Controllers
             var value = await _CompanyService.Get(id);
 
             return Ok(value);
+        }
+
+        [HttpGet("/states")]
+        public async Task<IActionResult> GetStates()
+        {
+            var request = new HttpRequestMessage(HttpMethod.Get, "https://servicodados.ibge.gov.br/api/v1/localidades/estados");
+            var client = _clientFactory.CreateClient();
+            var response = await client.SendAsync(request);
+
+            if (response.IsSuccessStatusCode)
+            {
+                using var responseStream = await response.Content.ReadAsStreamAsync();
+                var states = await JsonSerializer.DeserializeAsync
+                    <IEnumerable<object>>(responseStream);
+                return Ok(states);
+            }
+
+            return BadRequest("List de estados não encontrada");
         }
 
         // POST api/<controller>

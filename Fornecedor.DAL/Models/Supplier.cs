@@ -36,6 +36,8 @@ namespace Fornecedor.DAL.Models
         public string Telephones { get; set; }
         public string Rg { get; set; }
         public DateTime? BirthDate { get; set; }
+        [ForeignKey("Company")]
+        public Guid CompanyId { get; set; }
         [Required]
         public Company Company { get; set; }
     }

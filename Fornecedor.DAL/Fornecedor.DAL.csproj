@@ -13,6 +13,8 @@
   <ItemGroup>
     <Compile Include="Migrations\20200127020951_initial.cs" />
     <Compile Include="Migrations\20200127020951_initial.designer.cs" />
+    <Compile Include="Migrations\20200127232926_foreignKeyAdded.cs" />
+    <Compile Include="Migrations\20200127232926_foreignKeyAdded.designer.cs" />
     <Compile Include="Migrations\DataContextModelSnapshot.cs" />
   </ItemGroup>
 

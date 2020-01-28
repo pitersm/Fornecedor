@@ -42,13 +42,10 @@ namespace Fornecedor
                     PlatformServices.Default.Application.ApplicationBasePath;
                 string nomeAplicacao =
                     PlatformServices.Default.Application.ApplicationName;
-                string caminhoXmlDoc =
-                    Path.Combine(caminhoAplicacao, $"{nomeAplicacao}.xml");
-
-                c.IncludeXmlComments(caminhoXmlDoc);
             });
 
             services.AddMvc();
+            services.AddHttpClient();
             services.AddDbContext<DataContext>(x => x.UseSqlite(Configuration.GetConnectionString("DefaultConnection")));
             services.AddControllers();
             services.AddScoped<ICompanyService, CompanyService>();
@@ -61,6 +58,7 @@ namespace Fornecedor
 
             var config = new MapperConfiguration(cfg =>
             {
+                cfg.CreateMap<Supplier, SupplierDTO>();
                 cfg.CreateMap<SupplierDTO, Supplier>()
                     .ForMember(dest => dest.Company, m => m.MapFrom(a => new Company() { Id = (Guid) a.Company.Id }));
                 cfg.CreateMap<CompanyDTO, Company>();

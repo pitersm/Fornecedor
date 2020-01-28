@@ -18,14 +18,23 @@ namespace Fornecedor.DAL.Repository
             entities = context.Set<TEntity>();
         }
 
-        public Task<TEntity> Get(Guid id)
+        public Task<TEntity> Get(Guid id, string navigation = null)
         {
-            return entities.Where(a => a.Id == id).FirstOrDefaultAsync();
+            var query = entities.Where(a => a.Id == id);
+            if (!string.IsNullOrEmpty(navigation)) {
+                query = query.Include(navigation);
+            }
+
+            return query.AsNoTracking().FirstOrDefaultAsync();
         }
 
-        public IQueryable<TEntity> List()
+        public IQueryable<TEntity> List(string navigation = null)
         {
-            return entities.Select(a => a);
+            var query = entities.Select(a => a);
+            if (!string.IsNullOrEmpty(navigation)) { 
+                query = query.Include(navigation);
+            };
+            return query;
         }
 
         public async Task<TEntity> Save(TEntity entity)
