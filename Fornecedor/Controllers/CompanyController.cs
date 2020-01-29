@@ -1,13 +1,18 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
+using System.IO.Compression;
 using System.Linq;
 using System.Net.Http;
+using System.Runtime.Serialization.Formatters.Binary;
+using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
 using Fornecedor.Service;
 using Fornecedor.Service.DTO;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json;
 
 namespace Fornecedor.API.Controllers
 {
@@ -59,9 +64,10 @@ namespace Fornecedor.API.Controllers
 
             if (response.IsSuccessStatusCode)
             {
-                using var responseStream = await response.Content.ReadAsStreamAsync();
-                var states = await JsonSerializer.DeserializeAsync
-                    <IEnumerable<object>>(responseStream);
+                var bytesDeco = Utils.Utils.DecompressGzipFile(response.Content.ReadAsByteArrayAsync().Result);
+                string responseStr = Encoding.Default.GetString(bytesDeco);
+
+                var states = JsonConvert.DeserializeObject<IEnumerable<StateDTO>>(responseStr);
                 return Ok(states);
             }
 
