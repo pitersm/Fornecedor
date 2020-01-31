@@ -1,0 +1,54 @@
+<h2>{{title}}</h2>
+<p-card>
+  <form ngSubmit="onSubmit" [formGroup]="companyForm">
+    <div class="p-grid">
+      <div class="-6 p-lg-3 p-md-4">
+        <p>Nome Fantasia</p>
+        <input type="text" name="tradeName" id="tradeName" pInputText maxlength=50 formControlName="tradeName" />
+        <p-message severity="error" text="Nome é obrigatório."
+         *ngIf="companyForm.get('tradeName').touched && !companyForm.get('tradeName').valid && companyForm.get('tradeName').errors['required']">
+        </p-message>
+      </div>
+      <div class="p-col-6 p-lg-3 p-md-4">
+        <p>UF</p>
+        <p-dropdown [options]="stateOptions" formControlName="uf"></p-dropdown>
+        <p-message severity="error" text="O estado é obrigatório."
+         *ngIf="companyForm.get('uf').touched && !companyForm.get('uf').valid && companyForm.get('uf').errors['required']">
+        </p-message>
+      </div>
+      <div class="p-col-6 p-lg-2 p-md-4">
+        <p>CNPJ</p>
+        <input type="text" pInputText name="cnpj" id="cnpj" formControlName="isbn" maxlength="14"/>
+        <span *ngIf="companyForm.get('cnpj').touched && companyForm.get('cnpj').invalid">
+          <p-message severity="error" *ngIf="companyForm.get('cnpj').errors['invalidCnpj']" text="O CNPJ informado não é válido."></p-message>
+          <p-message severity="error" *ngIf="companyForm.get('cnpj').errors['required']" text="É obrigatório informar o isbn."></p-message>
+        </span>
+      </div>
+    </div>
+    <hr>
+    <div class="p-grid">
+      <div class="p-col-12" style="text-align:right">
+        <button pButton type="button" label="Cancelar" icon="pi pi-times" class="ui-button-secondary" routerLink="companys"></button>
+        <button pButton type="button" label="Salvar" icon="pi pi-check" style="margin-left: .25em" (click)="onSubmit()" [disabled]="companyForm.invalid"></button>
+      </div>
+    </div>
+  </form>
+</p-card>
+<p-toast key="msg"></p-toast>
+<p-toast position="center" key="c" (onClose)="onDeactivateChoose(false)" [modal]="true" [baseZIndex]="5000" key="dialog">
+    <ng-template let-message pTemplate="message">
+        <div style="text-align: center">
+            <i class="pi pi-exclamation-triangle" style="font-size: 3em"></i>
+            <h3>{{message.summary}}</h3>
+            <p>{{message.detail}}</p>
+        </div>
+        <div class="ui-g ui-fluid">
+            <div class="ui-g-6">
+                <button type="button" pButton (click)="onDeactivateChoose(true)" label="Sair da página" class="ui-button-warning"></button>
+            </div>
+            <div class="ui-g-6">
+                <button type="button" pButton (click)="onDeactivateChoose(false)" label="Permanecer" class="ui-button-secondary"></button>
+            </div>
+        </div>
+    </ng-template>
+</p-toast>
