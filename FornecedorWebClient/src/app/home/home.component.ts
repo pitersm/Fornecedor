@@ -10,9 +10,9 @@ export class HomeComponent implements OnInit {
   companyCount: number;
   supplierCount: number;
   constructor(private route: ActivatedRoute) {
-    this.route.data.subscribe((res: any) => {
-      this.companyCount = res.companyCount;
-      this.supplierCount = res.supplierCount;
+    this.route.data.subscribe((data: any) => {
+      this.companyCount = data.counts.companiesCount;
+      this.supplierCount = data.counts.suppliersCount;
     });
   }
 

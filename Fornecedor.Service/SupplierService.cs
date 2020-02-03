@@ -32,6 +32,7 @@ namespace Fornecedor.Service
         public async Task<SupplierDTO> Create(SupplierDTO dto)
         {
             await ValidateSupplier(dto);
+            dto.CreationTime = DateTime.Now;
 
             var newBook = await _repository.Save(_mapper.Map<Supplier>(dto));
             return _mapper.Map<SupplierDTO>(newBook);
@@ -45,6 +46,11 @@ namespace Fornecedor.Service
         public async Task<SupplierDTO> Get(Guid id)
         {
             return _mapper.Map<SupplierDTO>(await _repository.Get(id, "Company"));
+        }
+
+        public Task<int> GetEntityCount()
+        {
+            return _repository.GetEntityCount();
         }
 
         public Task<List<SupplierDTO>> List()
@@ -82,7 +88,7 @@ namespace Fornecedor.Service
 
             if (isUpdate)
             {
-                var previousState = await Get((Guid)dto.Id);
+                var previousState = await Get(dto.Id.Value);
                 if (previousState.CpfCnpj == dto.CpfCnpj)
                 {
                     cnpjChanged = false;
@@ -116,7 +122,7 @@ namespace Fornecedor.Service
                     throw new Exception("Invalid company for supplier.");
                 }
 
-                if (company.Uf == "PR" && ValidationService.CalculateAge(dto.BirthDate) < 18)
+                if (company.Uf == "PR" && ValidationService.CalculateAge(dto.BirthDate.Value) < 18)
                 {
                     throw new Exception("Supplier must be of age.");
                 }

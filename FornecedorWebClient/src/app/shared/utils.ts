@@ -1,4 +1,8 @@
 export function isValidCNPJ(cnpj): boolean {
+  if (!cnpj) {
+    return true;
+  }
+
   cnpj = cnpj.replace(/[^\d]+/g, '');
 
   if (cnpj === '') {
@@ -24,7 +28,7 @@ export function isValidCNPJ(cnpj): boolean {
 
   let size = cnpj.length - 2;
   let numbers = cnpj.substring(0, size);
-  const digitos = cnpj.substring(size);
+  const digits = cnpj.substring(size);
   let sum = 0;
   let pos = size - 7;
   for (let i = size; i >= 1; i--) {
@@ -35,7 +39,7 @@ export function isValidCNPJ(cnpj): boolean {
   }
 
   let result = sum % 11 < 2 ? 0 : 11 - sum % 11;
-  if (result !== digitos.charAt(0)) {
+  if (result.toString() !== digits.charAt(0)) {
     return false;
   }
 
@@ -50,9 +54,93 @@ export function isValidCNPJ(cnpj): boolean {
     }
   }
   result = sum % 11 < 2 ? 0 : 11 - sum % 11;
-  if (result !== digitos.charAt(1)) {
+  if (result.toString() !== digits.charAt(1)) {
     return false;
   }
 
   return true;
+}
+
+export function isValidCpf(cpf: string): boolean {
+  if (!cpf) {
+    return true;
+  }
+
+  cpf = cpf.replace(/[^\d]+/g, '');
+
+  if (cpf.length !== 11) {
+      return false;
+  }
+  if ((cpf === '00000000000')
+  || (cpf === '11111111111')
+  || (cpf === '22222222222')
+  || (cpf === '33333333333')
+  || (cpf === '44444444444')
+  || (cpf === '55555555555')
+  || (cpf === '66666666666')
+  || (cpf === '77777777777')
+  || (cpf === '88888888888')
+  || (cpf === '99999999999')) {
+      return false;
+  }
+
+  let numberValue = 0;
+  let character = '';
+  const numbers = '0123456789';
+  let j = 10;
+  let sum = 0;
+  let rest = 0;
+  let digit1 = 0;
+  let digit2 = 0;
+  let cpfAux = '';
+  cpfAux = cpf.substring(0, 9);
+
+  for (let i = 0; i < 9; i++) {
+      character = cpfAux.charAt(i);
+      if (numbers.search(character) === -1) {
+          return false;
+      }
+      numberValue = Number(character);
+      sum = sum + (numberValue * j);
+      j--;
+  }
+
+  rest = sum % 11;
+  digit1 = 11 - rest;
+  if (digit1 > 9) {
+      digit1 = 0;
+  }
+  j = 11;
+  sum = 0;
+  cpfAux = cpfAux + digit1;
+
+  for (let i = 0; i < 10; i++) {
+      character = cpfAux.charAt(i);
+      numberValue = Number(character);
+      sum = sum + (numberValue * j);
+      j--;
+  }
+
+  rest = sum % 11;
+  digit2 = 11 - rest;
+  if (digit2 > 9) {
+      digit2 = 0;
+  }
+
+  cpfAux = cpfAux + digit2;
+  if (cpf !== cpfAux) {
+      return false;
+  } else {
+      return true;
+  }
+}
+
+export function getAge(birthDate: Date) {
+  const today = new Date();
+  let age = today.getFullYear() - birthDate.getFullYear();
+  const m = today.getMonth() - birthDate.getMonth();
+  if (m < 0 || (m === 0 && today.getDate() < birthDate.getDate())) {
+      age--;
+  }
+  return age;
 }

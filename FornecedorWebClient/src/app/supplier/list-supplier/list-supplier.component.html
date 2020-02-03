@@ -1,0 +1,53 @@
+<p-toast [style]="{marginTop: '80px'}"></p-toast>
+
+<h2 style="text-align:center">Listagem de Fornecedores</h2>
+<p *ngIf="suppliers.length > 0">Clique no registro para visualizar opções.</p>
+<p-table [value]="suppliers" selectionMode="single" [(selection)]="selectedSupplier" (onRowSelect)="onRowSelect($event)"
+  [paginator]="true"  [rows]="10" [responsive]="true" *ngIf="suppliers.length > 0">
+    <ng-template pTemplate="header" let-columns>
+      <tr>
+        <th>Nome</th>
+        <th style="width: 60px">Tipo</th>
+        <th>CPF/CNPJ</th>
+        <th>Telefone(s)</th>
+        <th>RG</th>
+        <th>Data de Nascimento</th>
+        <th>Empresa</th>
+        <th>Criado em</th>
+    </tr>
+    </ng-template>
+    <ng-template pTemplate="body" let-supplier>
+      <tr [pSelectableRow]="supplier">
+          <td>{{supplier.name}}</td>
+          <td>{{supplier.type}}</td>
+          <td>{{supplier.cpfCnpj}}</td>
+          <td>{{supplier.telephonesString}}</td>
+          <td>{{supplier.rg}}</td>
+          <td>{{supplier.birthDate | date : 'dd/MM/yyyy'}}</td>
+          <td>{{supplier.company.tradeName}}</td>
+          <td>{{supplier.creationTime | date : 'dd/MM/yyyy hh:mm:ss'}}</td>
+      </tr>
+    </ng-template>
+    <ng-template pTemplate="summary" let-supplier>
+      <div style="text-align:left">
+          <button type="button" pButton icon="fa fa-plus" (click)="showAdd()" label="Adicionar Fornecedor"></button>
+      </div>
+  </ng-template>
+</p-table>
+<p *ngIf="suppliers.length === 0">
+  Não foram cadastrados fornecedores até o momento.
+  <br>
+  <button type="button" pButton icon="fa fa-plus" (click)="showAdd()" label="Adicionar Fornecedor"></button>
+</p>
+
+<p-dialog header="Detalhes da empresa" [(visible)]="displayDialog" [responsive]="true" showEffect="fade" [modal]="true">
+  <div class="ui-g ui-fluid" *ngIf="selectedSupplier">
+    O que deseja fazer com o fornecedor selecionado?
+  </div>
+  <p-footer>
+      <div class="ui-dialog-buttonpane ui-helper-clearfix">
+          <button type="button" pButton icon="fa fa-close" class="ui-button-danger" (click)="deleteSupplier(selectedSupplier.id)" label="Excluir Fornecedor"></button>
+          <button type="button" pButton icon="fa fa-check" (click)="showEdit()" label="Editar"></button>
+      </div>
+  </p-footer>
+</p-dialog>

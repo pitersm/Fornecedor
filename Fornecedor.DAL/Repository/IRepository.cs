@@ -14,5 +14,7 @@ namespace Fornecedor.DAL.Repository
         Task<TEntity> Save(TEntity entity);
         Task Update(TEntity entity);
         Task Delete(Guid id);
+        Task<int> GetEntityCount();
+
     }
 }

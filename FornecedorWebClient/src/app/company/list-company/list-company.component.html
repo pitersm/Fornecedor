@@ -1,1 +1,43 @@
-<p>list-company works!</p>
+<p-toast [style]="{marginTop: '80px'}"></p-toast>
+
+<h2 style="text-align:center">Listagem de Empresas</h2>
+<p *ngIf="companies.length > 0">Clique no registro para visualizar opções.</p>
+<p-table [value]="companies" selectionMode="single" [(selection)]="selectedCompany" (onRowSelect)="onRowSelect($event)"
+  [paginator]="true"  [rows]="10" [responsive]="true" *ngIf="companies.length > 0">
+    <ng-template pTemplate="header" let-columns>
+      <tr>
+        <th>Nome Fantasia</th>
+        <th>UF</th>
+        <th>Cnpj</th>
+    </tr>
+    </ng-template>
+    <ng-template pTemplate="body" let-company>
+      <tr [pSelectableRow]="company">
+          <td>{{company.tradeName}}</td>
+          <td>{{company.uf}}</td>
+          <td>{{company.cnpj}}</td>
+      </tr>
+    </ng-template>
+    <ng-template pTemplate="summary" let-company>
+      <div style="text-align:left">
+          <button type="button" pButton icon="fa fa-plus" (click)="showAdd()" label="Adicionar Empresa"></button>
+      </div>
+  </ng-template>
+</p-table>
+<p *ngIf="companies.length === 0">
+  Não foram cadastradas empresas até o momento.
+  <br>
+  <button type="button" pButton icon="fa fa-plus" (click)="showAdd()" label="Adicionar Empresa"></button>
+</p>
+
+<p-dialog header="Detalhes da empresa" [(visible)]="displayDialog" [responsive]="true" showEffect="fade" [modal]="true">
+  <div class="ui-g ui-fluid" *ngIf="selectedCompany">
+    O que deseja fazer com a empresa selecionada?
+  </div>
+  <p-footer>
+      <div class="ui-dialog-buttonpane ui-helper-clearfix">
+          <button type="button" pButton icon="fa fa-close" class="ui-button-danger" (click)="deleteCompany(selectedCompany.id)" label="Excluir Empresa"></button>
+          <button type="button" pButton icon="fa fa-check" (click)="showEdit()" label="Editar"></button>
+      </div>
+  </p-footer>
+</p-dialog>

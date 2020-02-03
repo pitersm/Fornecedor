@@ -3,18 +3,17 @@ import { Company } from '../model/company.model';
 import { HttpClient } from '@angular/common/http';
 import { map } from 'rxjs/operators';
 import { Observable } from 'rxjs';
-import { SelectItem } from 'primeng/api/selectitem';
 
 @Injectable({
   providedIn: 'root'
 })
 export class CompanyService {
-  baseUrl = 'http://localhost:50001/api/company/';
+  baseUrl = 'https://localhost:5001/api/company/';
   constructor(private http: HttpClient) { }
   companies: Company[];
 
   getCompany(id: string): Observable<Company> {
-    return this.http.get(this.baseUrl + id)
+    return this.http.get(`${this.baseUrl}${id}`)
       .pipe(map((response: any) => {
         const company: Company = response;
         return company;
@@ -38,7 +37,7 @@ export class CompanyService {
   }
 
   checkIfCnpjExists(cnpj: string): Observable<boolean> {
-    return this.http.get(this.baseUrl + 'cnpj/' + cnpj)
+    return this.http.get(`${this.baseUrl}cnpj/${encodeURIComponent(cnpj)}`)
     .pipe(map((response: any) => {
       const exists: boolean = response;
       return exists;
@@ -47,14 +46,5 @@ export class CompanyService {
 
   deleteCompany(id: string) {
     return this.http.delete(this.baseUrl + id);
-  }
-
-  getStates(): Observable<SelectItem[]> {
-    return this.http.get(`${this.baseUrl}/states`)
-    .pipe(map((response: any[]) => {
-      return response.map(stateDto => {
-        return { label: stateDto.nome, value: stateDto.sigla};
-      });
-    }));
   }
 }

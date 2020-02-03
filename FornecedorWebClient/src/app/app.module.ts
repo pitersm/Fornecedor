@@ -1,7 +1,9 @@
+import { MessageService } from 'primeng/api';
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { HttpClientModule } from '@angular/common/http';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
@@ -20,6 +22,10 @@ import { ToastModule } from 'primeng/toast';
 import { MessageModule} from 'primeng/message';
 import { CardModule } from 'primeng/card';
 import { RouterModule } from '@angular/router';
+import { InputMaskModule } from 'primeng/inputmask';
+import { EditSupplierComponent } from './supplier/edit-supplier/edit-supplier.component';
+import { CalendarModule } from 'primeng/calendar';
+import { ListSupplierComponent } from './supplier/list-supplier/list-supplier.component';
 
 @NgModule({
   declarations: [
@@ -28,7 +34,9 @@ import { RouterModule } from '@angular/router';
     SidebarComponent,
     HomeComponent,
     EditCompanyComponent,
-    ListCompanyComponent
+    ListCompanyComponent,
+    EditSupplierComponent,
+    ListSupplierComponent
   ],
   imports: [
     BrowserModule,
@@ -41,12 +49,17 @@ import { RouterModule } from '@angular/router';
     ToastModule,
     MessageModule,
     CardModule,
+    BrowserAnimationsModule,
     ReactiveFormsModule,
     FormsModule,
     HttpClientModule,
-    RouterModule
+    RouterModule,
+    InputMaskModule,
+    CalendarModule
   ],
-  providers: [],
+  providers: [
+    MessageService
+  ],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

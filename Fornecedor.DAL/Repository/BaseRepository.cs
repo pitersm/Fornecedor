@@ -62,5 +62,10 @@ namespace Fornecedor.DAL.Repository
             entities.Remove(entity);
             await _context.SaveChangesAsync();
         }
+
+        public async Task<int> GetEntityCount()
+        {
+            return await entities.CountAsync();
+        }
     }
 }

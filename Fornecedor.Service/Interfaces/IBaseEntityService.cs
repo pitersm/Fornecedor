@@ -12,5 +12,6 @@ namespace Fornecedor.Service
         Task<EntityDTO> Create(EntityDTO dto);
         Task Update(EntityDTO dto);
         Task Delete(Guid id);
+        Task<int> GetEntityCount();
     }
 }

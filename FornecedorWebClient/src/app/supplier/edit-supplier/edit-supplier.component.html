@@ -1,0 +1,106 @@
+<h2>{{title}}</h2>
+<p-card>
+  <form ngSubmit="onSubmit" [formGroup]="supplierForm">
+    <div class="row">
+      <div class="col-sm-6 col-lg-3 col-md-4">
+        <p>Nome</p>
+        <input type="text" name="name" id="name" pInputText maxlength=50 formControlName="name"/>
+        <div *ngIf="supplierForm.get('name').touched && !supplierForm.get('name').valid && supplierForm.get('name').errors['required']">
+          <p-message severity="error" text="Nome é obrigatório."></p-message>
+        </div>
+      </div>
+      <div class="col-sm-6 col-lg-3 col-md-4">
+        <p>Tipo</p>
+        <p-dropdown [options]="typeOptions" formControlName="type" [autoDisplayFirst]="false" (onChange)="setCpfCnpjValidators()"></p-dropdown>
+        <div *ngIf="supplierForm.get('type').touched && !supplierForm.get('type').valid && supplierForm.get('type').errors['required']">
+          <p-message severity="error" text="O tipo de fornecedor é obrigatório."></p-message>
+        </div>
+      </div>
+      <div class="col-sm-6 col-lg-2 col-md-4" *ngIf="supplierForm.get('type').value === 'PJ'">
+        <p>CNPJ</p>
+        <p-inputMask formControlName="cnpj" mask="99.999.999/9999-99">
+        </p-inputMask>
+        <span *ngIf="supplierForm.get('cnpj').touched && supplierForm.get('cnpj').invalid">
+          <p-message severity="error" *ngIf="supplierForm.get('cnpj').errors['invalidCnpj']" text="O CNPJ informado não é válido."></p-message>
+          <p-message severity="error" *ngIf="supplierForm.get('cnpj').errors['required']" text="É obrigatório informar o CNPJ."></p-message>
+        </span>
+      </div>
+      <div class="col-sm-6 col-lg-2 col-md-4" *ngIf="supplierForm.get('type').value === 'PF'">
+        <p>CPF</p>
+        <p-inputMask formControlName="cpf" mask="999.999.999-99">
+        </p-inputMask>
+        <span *ngIf="supplierForm.get('cpf').touched && supplierForm.get('cpf').invalid">
+          <p-message severity="error" *ngIf="supplierForm.get('cpf').errors['invalidCpf']" text="O CPF informado não é válido."></p-message>
+          <p-message severity="error" *ngIf="supplierForm.get('cpf').errors['required']" text="É obrigatório informar o CPF."></p-message>
+        </span>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-6 col-lg-3 col-md-4">
+        <p>Empresa</p>
+        <p-dropdown [options]="companyOptions" formControlName="companyId" [autoDisplayFirst]="false" (onChange)="setCompanyUF($event)"></p-dropdown>
+        <div *ngIf="supplierForm.get('companyId').touched && !supplierForm.get('companyId').valid && supplierForm.get('companyId').errors['required']">
+          <p-message severity="error" text="A empresa é obrigatória."></p-message>
+        </div>
+      </div>
+      <div class="col-lg-4 col-xl-3 col-sm-6 col-xs-12" *ngIf="supplierForm.get('type').value === 'PF'">
+        <p>Data de Nascimento</p>
+        <p-calendar formControlName="birthDate" dateFormat="dd/mm/yy"></p-calendar>
+        <span *ngIf="supplierForm.get('birthDate').touched && supplierForm.get('birthDate').invalid">
+          <p-message severity="error" text="É obrigatório informar a data de nascimento para fornecedores PF."
+            *ngIf="supplierForm.get('birthDate').errors['required']" ></p-message>
+          <p-message severity="error" text="A data de nascimento deve ser menor que a data atual."
+            *ngIf="supplierForm.get('birthDate').errors['invalidBirthDate']"></p-message>
+          <p-message severity="error" text="No paraná, o fornecedor deve ser maior de idade."
+            *ngIf="supplierForm.get('birthDate').errors['underageSupplier']"></p-message>
+        </span>
+      </div>
+      <div class="col-sm-6 col-lg-2 col-md-4" *ngIf="supplierForm.get('type').value === 'PF'">
+        <p>RG</p>
+        <p-inputMask formControlName="rg" mask="99.999.999-9">
+        </p-inputMask>
+        <span *ngIf="supplierForm.get('rg').touched && supplierForm.get('rg').invalid">
+          <p-message severity="error" *ngIf="supplierForm.get('rg').errors['invalidRg']" text="O RG informado não é válido."></p-message>
+          <p-message severity="error" *ngIf="supplierForm.get('rg').errors['required']" text="É obrigatório informar o RG para fornecedores PF."></p-message>
+        </span>
+      </div>
+    </div>
+    <div class="row">
+      <div formArrayName="telephoneList"
+        *ngFor="let item of telephoneList.controls; let i = index;" class="col-sm-6 col-lg-3 col-md-4" style="margin-top: 10px;">
+        <div [formGroupName]="i">
+          <p>Telefone {{i + 1}}</p>
+          <input type="text" pInputText maxlength=50 formControlName="telephone"/>
+        </div>
+      </div>
+      <div class="col-sm-6 col-lg-4 col-md-4" style="padding-top: 20px;">
+        <button type="button" pButton (click)="addTelephone()" label="Adicionar Telefone" class="ui-button-primary"></button>
+      </div>
+    </div>
+    <hr>
+    <div class="row">
+      <div class="col-sm-12" style="text-align:right">
+        <button pButton type="button" label="Cancelar" icon="pi pi-times" class="ui-button-secondary" routerLink="suppliers"></button>
+        <button pButton type="button" label="Salvar" icon="pi pi-check" style="margin-left: .25em" (click)="onSubmit()" [disabled]="supplierForm.invalid"></button>
+      </div>
+    </div>
+  </form>
+</p-card>
+<p-toast key="msg"></p-toast>
+<p-toast position="center" key="c" (onClose)="onDeactivateChoose(false)" [modal]="true" [baseZIndex]="5000" key="dialog">
+    <ng-template let-message pTemplate="message">
+        <div style="text-align: center">
+            <i class="pi pi-exclamation-triangle" style="font-size: 3em"></i>
+            <h3>{{message.summary}}</h3>
+            <p>{{message.detail}}</p>
+        </div>
+        <div class="ui-g ui-fluid">
+            <div class="ui-g-6">
+                <button type="button" pButton (click)="onDeactivateChoose(true)" label="Sair da página" class="ui-button-warning"></button>
+            </div>
+            <div class="ui-g-6">
+                <button type="button" pButton (click)="onDeactivateChoose(false)" label="Permanecer" class="ui-button-secondary"></button>
+            </div>
+        </div>
+    </ng-template>
+</p-toast>

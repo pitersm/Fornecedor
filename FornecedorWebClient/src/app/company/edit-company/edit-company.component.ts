@@ -1,3 +1,4 @@
+import { SharedService } from './../../shared/shared.service';
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { Company } from 'src/app/model/company.model';
@@ -28,6 +29,7 @@ export class EditCompanyComponent
 
   constructor(
     private companyService: CompanyService,
+    private sharedService: SharedService,
     private messageService: MessageService,
     private route: ActivatedRoute,
     private router: Router
@@ -56,7 +58,7 @@ export class EditCompanyComponent
   }
 
   ngOnInit() {
-    this.companyService.getStates()
+    this.sharedService.getStates()
       .subscribe((options: SelectItem[]) =>
         this.stateOptions = options
       );
@@ -80,7 +82,7 @@ export class EditCompanyComponent
   }
 
   invalidCnpj(control: FormControl): { [s: string]: boolean } {
-    if (isValidCNPJ(control.value)) {
+    if (!isValidCNPJ(control.value)) {
       return { invalidCnpj: true };
     }
     return null;
@@ -88,7 +90,7 @@ export class EditCompanyComponent
 
   onSubmit() {
     this.company = new Company(
-      this.isEdit ? this.company.id : '',
+      this.isEdit ? this.company.id : null,
       this.companyForm.controls.tradeName.value,
       this.companyForm.controls.uf.value,
       this.companyForm.controls.cnpj.value
@@ -178,8 +180,7 @@ export class EditCompanyComponent
     this.messageService.add({
       key: 'msg',
       severity: 'error',
-      summary: 'Erro no servidor',
-      detail: error
+      summary: 'Erro no servidor'
     });
   }
 }

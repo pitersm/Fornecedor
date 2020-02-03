@@ -1,10 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+using System.Net;
 using System.Threading.Tasks;
 using Fornecedor.Service;
 using Fornecedor.Service.DTO;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Fornecedor.API.Controllers
@@ -28,10 +26,10 @@ namespace Fornecedor.API.Controllers
             return Ok(values);
         }
 
-        [HttpGet("cnpj/{cpfCnpj}")]
+        [HttpGet("cpfCnpj/{cpfCnpj}")]
         public async Task<IActionResult> CpfCnpjExists(string cpfCnpj)
         {
-            bool exists = await _supplierService.CpfCnpjExists(cpfCnpj);
+            bool exists = await _supplierService.CpfCnpjExists(WebUtility.UrlDecode(cpfCnpj));
 
             return Ok(exists);
         }
@@ -39,7 +37,7 @@ namespace Fornecedor.API.Controllers
         [HttpGet("rg/{rg}")]
         public async Task<IActionResult> RgExists(string rg)
         {
-            bool exists = await _supplierService.RgExists(rg);
+            bool exists = await _supplierService.RgExists(WebUtility.UrlDecode(rg));
 
             return Ok(exists);
         }
@@ -74,6 +72,13 @@ namespace Fornecedor.API.Controllers
         public async Task Delete(Guid id)
         {
             await _supplierService.Delete(id);
+        }
+
+        [Route("Count")]
+        [HttpGet]
+        public async Task<int> GetCount()
+        {
+            return await _supplierService.GetEntityCount();
         }
     }
 }

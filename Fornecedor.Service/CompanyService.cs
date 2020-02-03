@@ -47,6 +47,11 @@ namespace Fornecedor.Service
             return _mapper.Map<CompanyDTO>(await _repository.Get(id));
         }
 
+        public Task<int> GetEntityCount()
+        {
+            return _repository.GetEntityCount();
+        }
+
         public Task<List<CompanyDTO>> List()
         {
             return _repository.List()
@@ -69,7 +74,7 @@ namespace Fornecedor.Service
 
             if (isUpdate)
             {
-                var previousCnpj = await _repository.GetCnpj((Guid)dto.Id);
+                var previousCnpj = await _repository.GetCnpj(dto.Id.Value);
                 
                 if (previousCnpj == dto.Cnpj)
                 {

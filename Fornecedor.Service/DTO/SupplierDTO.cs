@@ -18,7 +18,7 @@ namespace Fornecedor.Service.DTO
         [Required]
         public List<string> TelephoneList { get; set; }
         public string Rg { get; set; }
-        public DateTime BirthDate { get; set; }
+        public DateTime? BirthDate { get; set; }
         public Guid CompanyId { get; set; }
         public CompanyDTO Company { get; set; }
     }

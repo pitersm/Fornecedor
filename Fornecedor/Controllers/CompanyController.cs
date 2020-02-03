@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.IO.Compression;
 using System.Linq;
+using System.Net;
 using System.Net.Http;
 using System.Runtime.Serialization.Formatters.Binary;
 using System.Text;
@@ -41,7 +42,7 @@ namespace Fornecedor.API.Controllers
         [HttpGet("cnpj/{cnpj}")]
         public async Task<IActionResult> CnpjExists(string cnpj)
         {
-            bool exists = await _CompanyService.CnpjExists(cnpj);
+            bool exists = await _CompanyService.CnpjExists(WebUtility.UrlDecode(cnpj));
 
             return Ok(exists);
         }
@@ -55,7 +56,7 @@ namespace Fornecedor.API.Controllers
             return Ok(value);
         }
 
-        [HttpGet("/states")]
+        [HttpGet("states")]
         public async Task<IActionResult> GetStates()
         {
             var request = new HttpRequestMessage(HttpMethod.Get, "https://servicodados.ibge.gov.br/api/v1/localidades/estados");
@@ -95,6 +96,13 @@ namespace Fornecedor.API.Controllers
         public async Task Delete(Guid id)
         {
             await _CompanyService.Delete(id);
+        }
+
+        [Route("Count")]
+        [HttpGet]
+        public async Task<int> GetCount()
+        {
+           return await _CompanyService.GetEntityCount();
         }
     }
 }
